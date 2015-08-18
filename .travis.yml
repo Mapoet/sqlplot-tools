@@ -4,6 +4,15 @@ branches:
   only:
     - master
 
+sudo: false
+
+addons:
+  apt:
+    sources:
+      - libboost-all-dev
+      - libpq-dev
+  postgresql: "9.4"
+
 env:
   global:
     - CMAKE_ARGS_ALL="-DBUILD_EXAMPLES=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/share/postgresql/"
@@ -28,11 +37,6 @@ env:
     # clang builds
     - CMAKE_CC="clang" CMAKE_CXX="clang++"   CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Debug"   DB="mysql"
     - CMAKE_CC="clang" CMAKE_CXX="clang++"   CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release" DB="mysql"
-
-install:
-  - sudo apt-get -qq update
-  - sudo apt-get install libboost-all-dev
-  - if [ "$DB" == "postgresql" ]; then sudo apt-get install libpq-dev; fi
 
 before_script:
   - mkdir build && cd build && cmake -DCMAKE_C_COMPILER=$CMAKE_CC -DCMAKE_CXX_COMPILER=$CMAKE_CXX $CMAKE_ARGS $CMAKE_ARGS_ALL -DTEST_DATABASE=$DB  ..
